@@ -22,7 +22,7 @@ jobs:
           echo "${{ github.event.pull_request }}"
 
       - name: Repository Dispatch
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'develop' && github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged == true }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: release-event
