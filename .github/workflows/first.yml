@@ -24,7 +24,7 @@ jobs:
           echo "Hello, world!"
 
       - name: Repository Dispatch
-        if: ${{ github.ref_name == 'main' && github.event_name == 'pull_request' && github.event.pull_request.merged == true }}
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'develop' && github.base_ref == 'main' && github.event.pull_request.merged == true }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: release-event
