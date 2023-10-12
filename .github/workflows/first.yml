@@ -13,6 +13,7 @@ env:
 
 jobs:
   test:
+    if: ${{ github.event_name == 'push' }} || ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,3 +22,10 @@ jobs:
       - name: Hello!
         run: |
           echo "Hello, world!"
+
+      - name: Repository Dispatch
+        if: ${{ github.ref_name == 'main' && github.event_name == 'pull_request' && github.event.pull_request.merged == true }}
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: release-event
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "pull_request": { "title": "${{ github.event.pull_request.title }}", "body": "${{ github.event.pull_request.body }}", "number": "${{ github.event.pull_request.number }}", "head": "${{ github.event.pull_request.head.ref }}", "base": "${{ github.event.pull_request.base.ref}}"}}'
