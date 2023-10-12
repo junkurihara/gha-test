@@ -8,43 +8,29 @@ on:
     branches:
       - main
       - develop
+  repository_dispatch:
+    types: [release-event]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: retrive github script context
-        uses: actions/github-script@v6
-        with:
-          script: |
-            core.info(JSON.stringify(context.payload))
-
-      - name: checkout
-        # if: ${{ steps.regex-match.outputs.match != '' }}
-        uses: actions/checkout@v4
-
-      - name: printout
+      - name: print out event_name
         run: |
-          echo "${{ github.ref }}"
-          echo "${{ github.event.workflow_run.event }}""
-          echo "${{ github.ref_name }}""
+          echo "${{ github.event_name }}"
 
   release:
     runs-on: ubuntu-latest
-    # if: ${{ github.ref == 'main' && github.event.workflow_run.event == 'pull_request' }}
+    if: ${{ github.event_name == 'repository_dispatch' }}
     needs: test
     steps:
       - name: check pull_request title
         uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
         with:
-          text: ${{ github.event.pull_request.title }}
+          text: ${{ github.event.repository_dispatch.client_payload.pull_request.title }}
           regex: "^(\\d+\\.\\d+\\.\\d+)$"
-
-      - name: Hello!
-        run: |
-          echo "${{ github.event.workflow_run.event }}""
 
       - name: omg
         uses: actions/github-script@v6
