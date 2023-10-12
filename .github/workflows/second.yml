@@ -24,9 +24,15 @@ jobs:
         # if: ${{ steps.regex-match.outputs.match != '' }}
         uses: actions/checkout@v4
 
+      - name: printout
+        run: |
+          echo "${{ github.ref }}"
+          echo "${{ github.event.workflow_run.event }}""
+          echo "${{ github.ref_name }}""
+
   release:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'main' && github.event.workflow_run.event == 'pull_request' }}
+    # if: ${{ github.ref == 'main' && github.event.workflow_run.event == 'pull_request' }}
     needs: test
     steps:
       - name: check pull_request title
