@@ -1,0 +1,24 @@
+name: Second
+on:
+  workflow_run:
+    workflows:
+      - "First"
+    types:
+      - "completed"
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: retrive github script context
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.info(JSON.stringify(context.payload))
+
+      - name: checkout
+        # if: ${{ steps.regex-match.outputs.match != '' }}
+        uses: actions/checkout@v4
