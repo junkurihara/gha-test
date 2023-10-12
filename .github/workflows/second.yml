@@ -32,14 +32,14 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    # if: ${{ github.ref == 'main' && github.event.workflow_run.event == 'pull_request' }}
+    if: ${{ github.ref_name == 'main' && github.event.workflow_run.event == 'pull_request' }}
     needs: test
     steps:
       - name: check pull_request title
         uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
         with:
-          text: ${{ github.event.pull_request.title }}
+          text: ${{ github.event.workflow_run.head_commit.message }}
           regex: "^(\\d+\\.\\d+\\.\\d+)$"
 
       - name: Hello!
