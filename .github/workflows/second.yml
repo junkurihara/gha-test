@@ -7,6 +7,7 @@ on:
       - "completed"
     branches:
       - main
+      - develop
 
 jobs:
   test:
@@ -22,3 +23,27 @@ jobs:
       - name: checkout
         # if: ${{ steps.regex-match.outputs.match != '' }}
         uses: actions/checkout@v4
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'main' && github.event.workflow_run.event == 'pull_request' }}
+    needs: test
+    steps:
+      - name: check pull_request title
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.event.pull_request.title }}
+          regex: "^(\\d+\\.\\d+\\.\\d+)$"
+
+      - name: Hello!
+        run: |
+          echo "${{ github.event.workflow_run.event }}""
+
+      - name: omg
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.info(JSON.stringify(context.payload.pull_request))
+            core.info(JSON.stringify(context.payload.workflow_run))
+            core.info(JSON.stringify(context.payload.workflow_run.event))
