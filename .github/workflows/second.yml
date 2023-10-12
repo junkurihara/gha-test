@@ -9,7 +9,8 @@ on:
       - main
       - develop
   repository_dispatch:
-    types: [release-event]
+    types:
+      - release-event
 
 jobs:
   test:
